@@ -13,11 +13,7 @@ const API_KEY = 'AIzaSyAdDHddiRP4SYxg-WeRCY5M37UMo6N_s3A';
   }
 */
 const store = {
-  videos: [{
-    id: '98ds8fbsdy67',
-    title: 'Cats dancing the Macarena',
-    thumbnail: 'https://img.youtube.com/some/thumbnail.jpg'
-  }
+  videos: [
   ]
 };
 
@@ -68,6 +64,7 @@ const decorateResponse = function(response){
 // 2. Using the object, return an HTML string containing all the expected data
 // TEST IT!
 const generateVideoItemHtml = function (video) {
+
 
 };
 
