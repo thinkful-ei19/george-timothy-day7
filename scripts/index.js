@@ -13,8 +13,8 @@ const API_KEY = 'AIzaSyAdDHddiRP4SYxg-WeRCY5M37UMo6N_s3A';
   }
 */
 const store = {
-  videos: [
-  ]
+  videos: [],
+  items: []
 };
 
 // TASK: Add the Youtube Search Base URL here:
@@ -27,6 +27,7 @@ const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 // 3. Make a getJSON call using the query object and sending the provided callback in as the last argument
 // TEST IT! Execute this function and console log the results inside the callback.
 const fetchVideos = function (searchTerm, callback) {
+  console.log('`fetchVideos` ran');
   const query = {
     q: `${searchTerm}`,
     key: API_KEY,
@@ -36,7 +37,11 @@ const fetchVideos = function (searchTerm, callback) {
   };
   $.getJSON(BASE_URL, query, callback);
 };
-// fetchVideos('cats', decorateResponse);
+fetchVideos('cats', function(response){
+  let decorateObjects = decorateResponse(response);
+  let htmlObjects =  decorateObjects.map(generateVideoItemHtml);
+  console.log(htmlObjects.join(''));
+});
 
 // TASK:
 // 1. Create a `decorateResponse` function that receives the Youtube API response
@@ -46,17 +51,18 @@ const fetchVideos = function (searchTerm, callback) {
 // WILL have to dig into several nested properties!
 // TEST IT! Grab an example API response and send it into the function - make sure
 // you get back the object you want.
-const decorateResponse = function(response){
+function decorateResponse(response){
+  console.log('`decorateResponse` ran');
   console.log('global response', response);
-  const hi = response.items.map(item => {
+  const decorateObjects = response.items.map(item => {
     return {
       id: item.id.videoId,
       title: item.snippet.title,
       thumbnail: item.snippet.thumbnails.default.url
     }
   })
-  console.log(JSON.stringify(hi, null, 4));
-  return hi;
+  console.log(JSON.stringify(decorateObjects, null, 4));
+  return decorateObjects;
 };
 
 // TASK:
@@ -64,8 +70,14 @@ const decorateResponse = function(response){
 // 2. Using the object, return an HTML string containing all the expected data
 // TEST IT!
 const generateVideoItemHtml = function (video) {
-
-
+  console.log('`generateVideoItemHtml` ran');
+  return `
+      <div>
+      <h2>
+      ${video.id}// decorateResponse(vi)
+      </h2>
+      </div>
+  `;
 };
 
 // TASK:
@@ -73,7 +85,8 @@ const generateVideoItemHtml = function (video) {
 // objects and sets the array as the value held in store.items
 // TEST IT!
 const addVideosToStore = function (videos) {
-
+ const pushVideos = fetchVideos(videos, decorateResponse)
+  store.push(item);
 };
 
 // TASK:
