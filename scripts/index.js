@@ -7,14 +7,13 @@ const API_KEY = 'AIzaSyAdDHddiRP4SYxg-WeRCY5M37UMo6N_s3A';
   dataset Youtube will deliver to us.  Example object:
   
   {
-    id: '98ds8fbsdy67',
+    id: '98ds8fbsdy67',cd
     title: 'Cats dancing the Macarena',
     thumbnail: 'https://img.youtube.com/some/thumbnail.jpg'
   }
 */
 const store = {
   videos: [],
-  items: []
 };
 
 // TASK: Add the Youtube Search Base URL here:
@@ -37,11 +36,13 @@ const fetchVideos = function (searchTerm, callback) {
   };
   $.getJSON(BASE_URL, query, callback);
 };
-fetchVideos('cats', function(response){
-  let decorateObjects = decorateResponse(response);
-  let htmlObjects =  decorateObjects.map(generateVideoItemHtml);
-  console.log(htmlObjects.join(''));
-});
+// fetchVideos('cats', function(response){
+//   let decorateObjects = decorateResponse(response);
+//   addVideosToStore(decorateObjects);
+//   render();
+//   let htmlObjects =  decorateObjects.map(generateVideoItemHtml);
+//   console.log(htmlObjects.join(''));
+// });
 
 // TASK:
 // 1. Create a `decorateResponse` function that receives the Youtube API response
@@ -59,11 +60,12 @@ function decorateResponse(response){
       id: item.id.videoId,
       title: item.snippet.title,
       thumbnail: item.snippet.thumbnails.default.url
-    }
-  })
+    };
+  });
   console.log(JSON.stringify(decorateObjects, null, 4));
-  return decorateObjects;
-};
+  addVideosToStore(decorateObjects);
+  render();
+}
 
 // TASK:
 // 1. Create a `generateVideoItemHtml` function that receives the decorated object
@@ -74,7 +76,7 @@ const generateVideoItemHtml = function (video) {
   return `
       <div>
       <h2>
-      ${video.id}// decorateResponse(vi)
+      ${video.title}
       </h2>
       </div>
   `;
@@ -85,8 +87,7 @@ const generateVideoItemHtml = function (video) {
 // objects and sets the array as the value held in store.items
 // TEST IT!
 const addVideosToStore = function (videos) {
- const pushVideos = fetchVideos(videos, decorateResponse)
-  store.push(item);
+  videos.forEach(video => store.videos.push(video));
 };
 
 // TASK:
@@ -95,7 +96,12 @@ const addVideosToStore = function (videos) {
 // 3. Add your array of DOM elements to the appropriate DOM element
 // TEST IT!
 const render = function () {
-
+  console.log('`render` ran');
+  let videoString = store.videos.map(video => {
+    return generateVideoItemHtml(video);
+  }).join('');
+  console.log(videoString);
+  $('.results').html(videoString);
 };
 
 // TASK:
@@ -110,11 +116,17 @@ const render = function () {
 //   g) Inside the callback, run the `render` function 
 // TEST IT!
 const handleFormSubmit = function () {
-
+  $('#submit-btn').on('click', function(event){
+    event.preventDefault();
+    const searchTerm = $('#search-term').val();
+    console.log('This is the Search term',searchTerm);
+    fetchVideos(searchTerm, decorateResponse);
+  });
 };
 
 // When DOM is ready:
 $(function () {
+  handleFormSubmit();
   // TASK:
   // 1. Run `handleFormSubmit` to bind the event listener to the DOM
 });
